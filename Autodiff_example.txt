@@ -1,0 +1,52 @@
+############################################################
+# Illustration of:
+a = Var(3.0)
+b = Var(5.0)
+f = a * b
+
+f.backward()
+
+      f.backward()
+      └── f.backprop(1.0)
+            f.grad = 1.0
+            grad_fn = [(a, 5), (b, 3)]
+
+            a.backprop(5)
+            │     a.grad = 5
+            │     no children → stop
+            │
+            b.backprop(3)
+                  b.grad = 3
+                  no children → stop
+
+############################################################
+
+# Illustration of: 
+
+a = Var(3.0)
+b = Var(5.0)
+c = a * b
+d = Var(9.0)
+e = a * d
+f = c + e
+
+f.backward()
+
+      f.backward()
+      ├── f.backprop(1)
+      │   ├── c.backprop(1)
+      │   │   ├── a.backprop(5)
+      │   │       ├── a.grad = 5
+      │   │       └── no children → stop
+
+      │   │   └── b.backprop(3)
+      │   │       ├── b.grad = 3
+      │   │       └── no children → stop
+
+      │   └── e.backprop(1)
+      │       ├── a.backprop(9)
+      │   │       ├── a.grad = 9+5
+      │   │       └── no children → stop
+      │       └── d.backprop(3)
+      │   │       ├── b.grad = 3
+      │   │       └── no children → stop
