@@ -1,3 +1,11 @@
+############################################################
+# Illustration of:
+a = Var(3.0)
+b = Var(5.0)
+f = a * b
+
+f.backward()
+
       f.backward()
       └── f.backprop(1.0)
             f.grad = 1.0
@@ -10,6 +18,19 @@
             b.backprop(3)
                   b.grad = 3
                   no children → stop
+
+############################################################
+
+# Illustration of: 
+
+a = Var(3.0)
+b = Var(5.0)
+c = a * b
+d = Var(9.0)
+e = a * d
+f = c + e
+
+f.backward()
 
       f.backward()
       ├── f.backprop(1)
